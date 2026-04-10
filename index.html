@@ -586,15 +586,48 @@
       <div class="item-grid">
         <div class="info-box hover-lift">
           <h3>Khoảnh khắc nghệ thuật</h3>
-          <img src="https://files.catbox.moe/j4trfg.jpg" alt="Ảnh đại diện Nguyễn Vũ Gia Hân" style="width:100%; height:320px; object-fit:cover; border-radius:20px; margin-top:14px; box-shadow:0 10px 24px rgba(0,0,0,0.08);" />
+          <img
+            src="https://files.catbox.moe/j4trfg.jpg"
+            alt="Ảnh đại diện Nguyễn Vũ Gia Hân"
+            class="media-thumb"
+            data-type="image"
+            data-src="https://files.catbox.moe/j4trfg.jpg"
+            style="width:100%; height:320px; object-fit:cover; border-radius:20px; margin-top:14px; box-shadow:0 10px 24px rgba(0,0,0,0.08); cursor:pointer;"
+          />
           <p style="margin-top:14px;">Một khung hình mềm mại, mang màu sắc dreamcore và thể hiện cá tính nghệ thuật của mình.</p>
         </div>
         <div class="info-box hover-lift">
-          <h3>Video nổi bật</h3>
-          <div style="position:relative; width:100%; padding-top:56.25%; margin-top:14px; border-radius:20px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,0.08); background:rgba(255,255,255,0.35);">
-            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video giới thiệu" style="position:absolute; inset:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-          </div>
-          <p style="margin-top:14px;">Bạn có thể thay video này bằng một video biểu diễn piano, hoạt động dự án hoặc clip giới thiệu bản thân.</p>
+          <h3>Video nổi bật 1</h3>
+          <video
+            class="media-thumb"
+            data-type="video"
+            data-src="https://files.catbox.moe/opygx2.mp4"
+            style="width:100%; height:320px; object-fit:cover; border-radius:20px; margin-top:14px; box-shadow:0 10px 24px rgba(0,0,0,0.08); cursor:pointer; background:rgba(255,255,255,0.35);"
+            muted
+            playsinline
+            controls
+          >
+            <source src="https://files.catbox.moe/opygx2.mp4" type="video/mp4" />
+          </video>
+          <p style="margin-top:14px;">Video nổi bật giúp portfolio trở nên sinh động và gần gũi hơn.</p>
+        </div>
+      </div>
+
+      <div class="item-grid" style="margin-top:18px;">
+        <div class="info-box hover-lift" style="grid-column: 1 / -1;">
+          <h3>Video nổi bật 2</h3>
+          <video
+            class="media-thumb"
+            data-type="video"
+            data-src="https://files.catbox.moe/mb43wp.mp4"
+            style="width:100%; height:420px; object-fit:cover; border-radius:20px; margin-top:14px; box-shadow:0 10px 24px rgba(0,0,0,0.08); cursor:pointer; background:rgba(255,255,255,0.35);"
+            muted
+            playsinline
+            controls
+          >
+            <source src="https://files.catbox.moe/mb43wp.mp4" type="video/mp4" />
+          </video>
+          <p style="margin-top:14px;">Bấm vào ảnh hoặc video để mở lớn và xem rõ hơn ngay trên trang.</p>
         </div>
       </div>
     </div>
@@ -640,6 +673,11 @@
     </div>
   </footer>
 
+  <div id="lightbox" style="position:fixed; inset:0; background:rgba(20,10,35,0.82); display:none; align-items:center; justify-content:center; padding:24px; z-index:9999; backdrop-filter:blur(8px);">
+    <button id="lightboxClose" aria-label="Đóng" style="position:absolute; top:18px; right:18px; width:48px; height:48px; border:none; border-radius:999px; background:rgba(255,255,255,0.18); color:white; font-size:28px; cursor:pointer;">×</button>
+    <div id="lightboxContent" style="max-width:min(1100px, 100%); max-height:90vh; width:100%; display:flex; align-items:center; justify-content:center;"></div>
+  </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const cards = document.querySelectorAll('.hover-lift');
@@ -668,6 +706,54 @@
           starLayer.style.transform = `translateY(${offset}px)`;
         });
       }
+
+      const lightbox = document.getElementById('lightbox');
+      const lightboxContent = document.getElementById('lightboxContent');
+      const lightboxClose = document.getElementById('lightboxClose');
+      const mediaThumbs = document.querySelectorAll('.media-thumb');
+
+      mediaThumbs.forEach((item) => {
+        item.addEventListener('click', function () {
+          const type = this.getAttribute('data-type');
+          const src = this.getAttribute('data-src');
+
+          if (!lightbox || !lightboxContent) return;
+
+          if (type === 'image') {
+            lightboxContent.innerHTML = `<img src="${src}" alt="Preview" style="max-width:100%; max-height:90vh; border-radius:24px; box-shadow:0 20px 40px rgba(0,0,0,0.25);" />`;
+          } else {
+            lightboxContent.innerHTML = `<video src="${src}" controls autoplay style="max-width:100%; max-height:90vh; border-radius:24px; box-shadow:0 20px 40px rgba(0,0,0,0.25); background:black;"></video>`;
+          }
+
+          lightbox.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      function closeLightbox() {
+        if (!lightbox || !lightboxContent) return;
+        lightbox.style.display = 'none';
+        lightboxContent.innerHTML = '';
+        document.body.style.overflow = '';
+      }
+
+      if (lightboxClose) {
+        lightboxClose.addEventListener('click', closeLightbox);
+      }
+
+      if (lightbox) {
+        lightbox.addEventListener('click', function (e) {
+          if (e.target === lightbox) {
+            closeLightbox();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeLightbox();
+        }
+      });
     });
   </script>
 </body>
